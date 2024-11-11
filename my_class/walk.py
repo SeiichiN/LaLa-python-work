@@ -9,17 +9,25 @@ XSIZE = 5
 board = [
     ['.', '.', '.', '.', '.'],
     ['.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.'],
+    ['.', '.', '#', '.', '.'],
+    ['.', '.', '#', '.', '.'],
     ['.', '.', '.', '.', '.']
     ]
+
+def get_blank_place():
+    is_blank = False
+    while not is_blank:
+        x = random.randint(0, XSIZE-1)
+        y = random.randint(0, YSIZE-1)
+        if board[y][x] == '.':
+            is_blank = True
+    return y, x
 
 class Player:
     def __init__(self, name):
         self.name = name
         self.inventory = []
-        self.x = random.randint(0, XSIZE-1)
-        self.y = random.randint(0, YSIZE-1)
+        self.y, self.x = get_blank_place()
     def location(self):
         print(f'[{self.y},{self.x}]')
 
@@ -27,13 +35,8 @@ class Player:
 class Character:
     def __init__(self, type):
         self.type = type
-        set_ok = False
-        while not set_ok:
-            self.x = random.randint(0, 4)
-            self.y = random.randint(0, 4)
-            if board[self.y][self.x] == '.':
-                board[self.y][self.x] = self.type
-                set_ok = True
+        self.y, self.x = get_blank_place()
+        board[self.y][self.x] = self.type
 
 def print_info(y, x):
     if board[y][x] != '.':
@@ -48,6 +51,7 @@ p1.location()
 
 stm = ''
 while stm != 'q':
+    now_place = p1.y, p1.x
     stm = input('W:E:N:S H:help L:見る T:取る Q:終了 > ').lower()
     if stm == 'w':
         p1.x -= 1
@@ -79,6 +83,8 @@ while stm != 'q':
         if thing == 'gold' or thing == 'potion':
             p1.inventory.append(thing)
             board[p1.y][p1.x] = '.'
+    if board[p1.y][p1.x] == '#':
+        p1.y, p1.x = now_place
     p1.location()
     print_info(p1.y, p1.x)
         
