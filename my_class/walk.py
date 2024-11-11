@@ -20,7 +20,7 @@ class Player:
         self.x = random.randint(0, XSIZE-1)
         self.y = random.randint(0, YSIZE-1)
     def location(self):
-        print(f'[{self.x},{self.y}]')
+        print(f'[{self.y},{self.x}]')
 
 
 class Character:
@@ -47,9 +47,9 @@ p1.location()
 
 stm = ''
 while stm != 'q':
-    stm = input('移動:M 見る:L 終了:Q > ').lower()
+    stm = input('M:移動 L:見る Q:終了 > ').lower()
     if stm == 'm':
-        dir = input('左:W 右:E 上:N 下:S > ').lower()
+        dir = input('W:左 E:右 N:上 S:下 > ').lower()
         if dir == 'w':
             p1.x -= 1
             if p1.x < 0:
@@ -57,7 +57,7 @@ while stm != 'q':
         elif dir == 'e':
             p1.x += 1
             if p1.x >= XSIZE:
-                p1.x = XSIZE
+                p1.x = XSIZE-1
         elif dir == 'n':
             p1.y -= 1
             if p1.y < 0:
@@ -65,7 +65,7 @@ while stm != 'q':
         elif dir == 's':
             p1.y += 1
             if p1.y >= YSIZE:
-                p1.y = YSIZE
+                p1.y = YSIZE-1
         p1.location()
         print_info(p1.y, p1.x)
     if stm == 'l':
