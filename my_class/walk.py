@@ -17,6 +17,7 @@ board = [
 class Player:
     def __init__(self, name):
         self.name = name
+        self.inventory = []
         self.x = random.randint(0, XSIZE-1)
         self.y = random.randint(0, YSIZE-1)
     def location(self):
@@ -47,27 +48,37 @@ p1.location()
 
 stm = ''
 while stm != 'q':
-    stm = input('M:移動 L:見る Q:終了 > ').lower()
-    if stm == 'm':
-        dir = input('W:左 E:右 N:上 S:下 > ').lower()
-        if dir == 'w':
-            p1.x -= 1
-            if p1.x < 0:
-                p1.x = 0
-        elif dir == 'e':
-            p1.x += 1
-            if p1.x >= XSIZE:
-                p1.x = XSIZE-1
-        elif dir == 'n':
-            p1.y -= 1
-            if p1.y < 0:
-                p1.y = 0
-        elif dir == 's':
-            p1.y += 1
-            if p1.y >= YSIZE:
-                p1.y = YSIZE-1
-        p1.location()
-        print_info(p1.y, p1.x)
-    if stm == 'l':
+    stm = input('W:E:N:S H:help L:見る T:取る Q:終了 > ').lower()
+    if stm == 'w':
+        p1.x -= 1
+        if p1.x < 0:
+            p1.x = 0
+    elif stm == 'e':
+        p1.x += 1
+        if p1.x >= XSIZE:
+            p1.x = XSIZE-1
+    elif stm == 'n':
+        p1.y -= 1
+        if p1.y < 0:
+            p1.y = 0
+    elif stm == 's':
+        p1.y += 1
+        if p1.y >= YSIZE:
+            p1.y = YSIZE-1
+    elif stm == 'l':
         print(board[p1.y][p1.x])
+    elif stm == 'h':
+        print('   N  ')
+        print('   ↑ ')
+        print('w← →E')
+        print('   ↓ ')
+        print('   S  ')
+        continue
+    elif stm == 't':
+        thing = board[p1.y][p1.x]
+        if thing == 'gold' or thing == 'potion':
+            p1.inventory.append(thing)
+            board[p1.y][p1.x] = '.'
+    p1.location()
+    print_info(p1.y, p1.x)
         
