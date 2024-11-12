@@ -3,72 +3,28 @@
 # 移動するプログラム
 #
 import random
-
-YSIZE = 5
-XSIZE = 5
-board = [
-    ['.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.'],
-    ['.', '.', '#', '.', '.'],
-    ['.', '.', '#', '.', '.'],
-    ['.', '.', '.', '.', '.']
-    ]
-
-def get_blank_place():
-    is_blank = False
-    while not is_blank:
-        x = random.randint(0, XSIZE-1)
-        y = random.randint(0, YSIZE-1)
-        if board[y][x] == '.':
-            is_blank = True
-    return y, x
-
-class Player:
-    def __init__(self, name):
-        self.name = name
-        self.inventory = []
-        self.y, self.x = get_blank_place()
-    def location(self):
-        print(f'[{self.y},{self.x}]')
-
-
-class Character:
-    def __init__(self, type):
-        self.type = type
-        self.y, self.x = get_blank_place()
-        board[self.y][self.x] = self.type
+from common import board, get_blank_place, YSIZE, XSIZE
+from character import Monster, Player, Item
+from battle import battle
 
 def print_info(y, x):
     if board[y][x] != '.':
-        print(board[y][x])
+        print(board[y][x].toString())
 
-goblin = Character('goblin')
-dragon = Character('dragon')
-gold = Character('gold')
-potion = Character('potion')
+
+goblin = Monster('goblin')
+dragon = Monster('dragon')
+gold = Item('gold')
+potion = Item('potion')
 p1 = Player('Taro')
 p1.location()
 
 stm = ''
 while stm != 'q':
     now_place = p1.y, p1.x
-    stm = input('W:E:N:S H:help L:見る T:取る Q:終了 > ').lower()
-    if stm == 'w':
-        p1.x -= 1
-        if p1.x < 0:
-            p1.x = 0
-    elif stm == 'e':
-        p1.x += 1
-        if p1.x >= XSIZE:
-            p1.x = XSIZE-1
-    elif stm == 'n':
-        p1.y -= 1
-        if p1.y < 0:
-            p1.y = 0
-    elif stm == 's':
-        p1.y += 1
-        if p1.y >= YSIZE:
-            p1.y = YSIZE-1
+    stm = input('W:E:N:S H:help L:見る T:取る B:戦う Q:終了 > ').lower()
+    if stm == 'w' or stm == 'e' or stm == 'n' or stm == 's':
+        p1.move(stm)
     elif stm == 'l':
         print(board[p1.y][p1.x])
     elif stm == 'h':
@@ -79,10 +35,10 @@ while stm != 'q':
         print('   S  ')
         continue
     elif stm == 't':
-        thing = board[p1.y][p1.x]
-        if thing == 'gold' or thing == 'potion':
-            p1.inventory.append(thing)
-            board[p1.y][p1.x] = '.'
+        p1.take()
+    elif stm == 'B':
+        monster = board[p1.y][p1.x]
+        battle(p1, monster)
     if board[p1.y][p1.x] == '#':
         p1.y, p1.x = now_place
     p1.location()
