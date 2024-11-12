@@ -1,11 +1,17 @@
 from common import board, get_blank_place, XSIZE, YSIZE
 
+class Character:
+    def __init__(self, type):
+        self.type = type
+        self.y, self.x = get_blank_place()
+
+
 class Player:
     def __init__(self, name):
         self.name = name
         self.inventory = []
-        self.hp = 100
         self.y, self.x = get_blank_place()
+        self.hp = 100
     def location(self):
         print(f'[{self.y},{self.x}]')
     def take(self):
@@ -35,19 +41,19 @@ class Player:
             self.y, self.x = now
         self.location()
 
-class Monster:
+class Monster(Character):
     def __init__(self, type):
+        super().__init__(type)
         self.type = type
         self.hp = 100
-        self.y, self.x = get_blank_place()
         board[self.y][self.x] = self
     def toString(self):
         return self.type
 
-class Item:
+class Item(Character):
     def __init__(self, type):
+        super().__init__(type)
         self.type = type
-        self.y, self.x = get_blank_place()
         board[self.y][self.x] = self
     def toString(self):
         return self.type

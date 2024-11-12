@@ -7,9 +7,9 @@ from common import board, get_blank_place, YSIZE, XSIZE
 from character import Monster, Player, Item
 from battle import battle
 
-def print_info(y, x):
-    if board[y][x] != '.':
-        print(board[y][x].toString())
+#def print_info(y, x):
+#    if board[y][x] != '.':
+#        print(board[y][x].toString())
 
 
 goblin = Monster('goblin')
@@ -38,5 +38,5 @@ while stm != 'q':
     elif stm == 'B':
         monster = board[p1.y][p1.x]
         battle(p1, monster)
-    print_info(p1.y, p1.x)
+    # print_info(p1.y, p1.x)
         
