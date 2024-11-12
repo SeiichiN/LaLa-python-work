@@ -35,8 +35,8 @@ while stm != 'q':
         continue
     elif stm == 't':
         p1.take()
-    elif stm == 'B':
+    elif stm == 'b':
         monster = board[p1.y][p1.x]
         battle(p1, monster)
-    # print_info(p1.y, p1.x)
+    p1.info_here()
         
