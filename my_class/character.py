@@ -14,6 +14,7 @@ class Player:
             self.inventory.append(thing)
             board[self.y][self.x] = '.'
     def move(self, dir):
+        now = self.y, self.x
         if dir == 'w':
             self.x -= 1
             if self.x < 0:
@@ -30,7 +31,9 @@ class Player:
             self.y += 1
             if self.y >= YSIZE:
                 self.y = YSIZE - 1
-
+        if board[self.y][self.x] == '#':
+            self.y, self.x = now
+        self.location()
 
 class Monster:
     def __init__(self, type):

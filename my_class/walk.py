@@ -21,7 +21,6 @@ p1.location()
 
 stm = ''
 while stm != 'q':
-    now_place = p1.y, p1.x
     stm = input('W:E:N:S H:help L:見る T:取る B:戦う Q:終了 > ').lower()
     if stm == 'w' or stm == 'e' or stm == 'n' or stm == 's':
         p1.move(stm)
@@ -39,8 +38,5 @@ while stm != 'q':
     elif stm == 'B':
         monster = board[p1.y][p1.x]
         battle(p1, monster)
-    if board[p1.y][p1.x] == '#':
-        p1.y, p1.x = now_place
-    p1.location()
     print_info(p1.y, p1.x)
         
