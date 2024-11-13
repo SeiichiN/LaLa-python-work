@@ -1,19 +1,25 @@
 import random
 from common import YSIZE, XSIZE, map
-from character import Actor
 
 # Playerクラス
 #   インスタンス変数
 #     name = 初期化時に設定
 #     y = ランダム 0..4
 #     x = ランダム 0..4
-class Player(Actor):
+class Player:
     def __init__(self, name):
-        super().__init__()
         self.name = name
         self.hp = 100
-        self.max_attack_p = 20
-        self.inventory = []
+        self.y = None
+        self.x = None
+        self.set_location()
+    def set_location(self):
+        loc_ok = False
+        while not loc_ok:
+            self.y = random.randint(0,YSIZE-1)
+            self.x = random.randint(0,XSIZE-1)
+            if map[self.y][self.x] == '.':
+                loc_ok = True
     def move(self, direction):
         before_place = (self.y, self.x)
         if direction == 'w':  #←
@@ -44,27 +50,3 @@ class Player(Actor):
             print('何もありません')
         else:
             print(sight.type, 'がいた！')
-    def attack(self, monster):
-        if self.hp <= 0:
-            return
-        print(f'{self.name}は{monster.type}を攻撃した！')
-        attack_p = random.randint(0, self.max_attack_p)
-        if attack_p == 0:
-            print('攻撃失敗')
-            return
-        monster.hp -= attack_p
-        print(f'{monster.type}に{attack_p}のダメージを与えた。')
-        if monster.hp <= 0:
-            print(f'{self.name}は{monster.type}を倒した！')
-            map[self.y][self.x] = '.'
-    def status(self):
-        inventory_list = ','.join(self.inventory)
-        print(f'HP:{self.hp} 持ち物:{inventory_list}')
-    def use(self):
-        item = map[self.y][self.x]
-        if item.type == 'potion' or item.type == 'ポーション':
-            self.hp = item.hp
-        else:
-            print(item.type)
-        map[self.y][self.x] = '.'
-

@@ -1,20 +1,12 @@
 import random
-from common import map, YSIZE, XSIZE
+from character import Character
 
-class Monster:
-    def __init__(self, type):
-        self.type = type
+class Monster(Character):
+    def __init__(self, mtype):
+        super().__init__()
+        self.type = mtype
         self.hp = 100
         self.max_attack_p = 20
-        self.set_location()
-    def set_location(self):
-        loc_ok = False
-        while not loc_ok:
-            self.y = random.randint(0,YSIZE-1)
-            self.x = random.randint(0,XSIZE-1)
-            if map[self.y][self.x] == '.':
-                loc_ok = True
-        map[self.y][self.x] = self
     def attack(self, player):
         if self.hp <= 0:
             return
@@ -30,11 +22,11 @@ class Monster:
 
 
 class Goblin(Monster):
-    def __init__(self, type):
+    def __init__(self, mtype):
         self.hp = 70
-        super().__init__(type)
+        super().__init__(mtype)
 
 class Dragon(Monster):
-    def __init__(self, type):
+    def __init__(self, mtype):
         self.hp = 120
-        super().__init__(type)
+        super().__init__(mtype)
