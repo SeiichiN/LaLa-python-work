@@ -1,68 +1,23 @@
 #
 # 5x5の盤面をプレーヤーが移動する
 #
-
+from player import Player
 import random
+from common import YSIZE, XSIZE, map
+from monster import Goblin, Dragon
 
-YSIZE = 5
-XSIZE = 5
-map = [
-    ['.', '.', '.', '.', '.'],
-    ['.', '.', 'dragon', '.', '.'],
-    ['.', '.', '#', '#', '.'],
-    ['.', 'goblin', '.', '#', '.'],
-    ['.', '.', '.', '.', '.']
-    ]
-
-# Playerクラス
-#   インスタンス変数
-#     name = 初期化時に設定
-#     y = ランダム 0..4
-#     x = ランダム 0..4
-class Player:
-    def __init__(self, name):
-        self.name = name
-        self.set_location()
-    def set_location(self):
-        loc_ok = False
-        while not loc_ok:
-            self.y = random.randint(0,YSIZE-1)
-            self.x = random.randint(0,XSIZE-1)
-            if map[self.y][self.x] == '.':
-                loc_ok = True
-    def move(self, dir):
-        if dir == 'w':  #←
-            self.x -= 1
-            if self.x < 0:
-                self.x = 0
-        elif dir == 'e':  #→
-            self.x += 1
-            if self.x >= XSIZE:
-                self.x = XSIZE-1
-        elif dir == 'n':  #↑
-            self.y -= 1
-            if self.y < 0:
-                self.y = 0
-        elif dir == 's':  #↓
-            self.y += 1
-            if self.y >= YSIZE:
-                self.y = YSIZE-1
-        self.location()
-    def location(self):
-        print(f'現在:[{self.y}:{self.x}]')
-    def look(self):
-        print(map[self.y][self.x])
-        
-
-        
-        
+goblin = Goblin('ゴブリン')
+dragon = Dragon('ドラゴン')
 p1 = Player('Taro')
 print(f'{p1.name} Y:{p1.y} X:{p1.x}')
 while True:
-    stm = input('wesn:移動 L:見る q:終了 > ').lower()
+    stm = input('wesn:移動 b:戦う q:終了 > ').lower()
     if stm == 'q':
         break
     elif stm=='w' or stm=='e' or stm=='s' or stm=='n':
         p1.move(stm)
-    elif stm == 'l':
-        p1.look()
+    elif stm == 'b':
+        p1.battle()
+        if p1.hp <= 0:
+            print('プレーヤーは倒れた。GAMEOVER')
+            break
