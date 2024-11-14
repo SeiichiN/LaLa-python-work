@@ -5,6 +5,7 @@ from player import Player
 from monster import Goblin, Dragon
 from common import map
 from item import Potion
+import sys
 
 def battle(player, monster):
     while player.hp > 0 and monster.hp > 0:
@@ -15,7 +16,7 @@ def battle(player, monster):
         monster.attack(player)
         if player.hp <= 0:
             print('GAMEOVER')
-            break
+            sys.exit()
         input(f'{player.name}:{player.hp} {monster.type}:{monster.hp} > ')
 
 goblin = Goblin('ゴブリン')
