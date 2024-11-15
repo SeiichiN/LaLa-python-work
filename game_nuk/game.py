@@ -16,6 +16,13 @@ def battle(player):
             input(f'プレーヤー:{player.hp} {monster.type}:{monster.hp} > ')
 
 
+def get_name():
+    print('あなたの名前を入力してください')
+    name = input('> ')
+    return name
+
+name = get_name()
+
 goblin = Goblin('ゴブリン')
 y, x = goblin.get_location()
 print(f'goblin [{y},{x}]')
@@ -27,10 +34,12 @@ print(f'dragon [{y},{x}]')
 potion = Potion('ポーション')
 y, x = potion.get_location()
 print(f'potion [{y},{x}]')
-p1 = Player('Taro')
+
+
+p1 = Player(name)
 print(f'{p1.name} [{p1.y},{p1.x}]')
 while True:
-    stm = input('wesn:移動 b:戦う u:使う l:見る t:装備 q:終了 > ').lower()
+    stm = input('wesn:移動 b:戦う u:使う l:見る k:取る t:装備 q:終了 > ').lower()
     if stm == 'q':
         break
     elif stm=='w' or stm=='e' or stm=='s' or stm=='n':
@@ -47,5 +56,7 @@ while True:
     elif stm == 'l':
         p1.location()
         p1.look()
+    elif stm == 'k':
+        p1.take()
 
 

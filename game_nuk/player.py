@@ -1,3 +1,4 @@
+
 import random
 from common import YSIZE, XSIZE, map
 from character import Actor
@@ -58,13 +59,26 @@ class Player(Actor):
             print(f'{self.name}は{monster.type}を倒した！')
             map[self.y][self.x] = '.'
     def status(self):
-        inventory_list = ','.join(self.inventory)
+        inventory_list = ''
+        for item in self.inventory:
+            inventory_list += item.type
         print(f'HP:{self.hp} 持ち物:{inventory_list}')
-    def use(self):
+    def take(self):
         item = map[self.y][self.x]
         if item.type == 'potion' or item.type == 'ポーション':
-            self.hp = item.hp
+            self.inventory.append(item)
+            map[self.y][self.x] = '.'
+            print(f'{self.name}は{item.type}を装備した')
         else:
             print(item.type)
-        map[self.y][self.x] = '.'
+    def use(self):
+        for item in self.inventory:
+            if item.type == 'potion' or item.type == 'ポーション':
+               self.hp = item.hp
+               print(f'{self.name}は{item.type}を飲んだ')
+               print(f'HPが{self.hp}になった')
+               self.inventory.remove(item)
+            else:
+                print(item.type)
+
 
