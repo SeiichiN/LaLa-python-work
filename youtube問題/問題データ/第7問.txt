@@ -1,0 +1,1 @@
+https://support.nii.ac.jp/ja/cib/api/b_opensearch#query
