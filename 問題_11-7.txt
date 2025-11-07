@@ -2,12 +2,12 @@
 
 def add10(a):
     a += 10
-    print(a)
+    print(a)  # 13
 
     
 a = 3
 add10(a)
-print(a)
+print(a)  # 3
 
 
 (2) 正しいのはどれか？
