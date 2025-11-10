@@ -9,7 +9,6 @@ map = [['.', '.', '.', '.', '.'],
        ['.', '.', '.', '.', '.']]
 
 def look():
-    global py, px
     print(f'[{py}:{px}]')
     print(map[py][px])
     
