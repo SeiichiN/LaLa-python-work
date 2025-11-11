@@ -13,7 +13,7 @@ with open(path, 'r', encoding='UTF-8') as f:
             pref_count_dict[pref] = num_all
 
 sorted = sorted(pref_count_dict.items(), key=lambda x:x[1], reverse=True)
-with open('sorted.txt', 'w', encoding='UTF-8') as out_f:
+with open('data/sorted.txt', 'w', encoding='UTF-8') as out_f:
     for line in sorted:
         out_f.write(line[0] + ',' + str(line[1]) + '\n')
     
