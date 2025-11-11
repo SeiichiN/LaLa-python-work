@@ -10,11 +10,21 @@ def judge(user, com):
     else:
         return 'わたしの勝ちです'
         
+def get_number():
+    is_number = False
+    while not is_number:
+        try:
+            num = int(input('0:グー 1:チョキ 2:パー 9:終了 > '))
+            is_number = True
+        except:
+            print('数字を入力してください')
+    return num    
+
 
 hands = ('グー', 'チョキ', 'パー')
 
 while True:
-    user = int(input('0:グー 1:チョキ 2:パー 9:終了 > '))
+    user = get_number()
     if user == 9:
         break
     com = random.randrange(3)
