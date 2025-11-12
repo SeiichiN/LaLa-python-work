@@ -1,6 +1,9 @@
 # p277
 # 都道府県別来館者数
 
+import matplotlib
+import matplotlib.pyplot as plt
+
 pref_count_dict = {}
 path = 'data/visitor_record.txt'
 with open(path, 'r', encoding='UTF-8') as f:
@@ -17,8 +20,22 @@ pref_count_sorted = sorted(
     key=lambda x:x[1],
     reverse=True)
 
-for i in pref_count_sorted:
-    print(i)
+## グラフィック描画
+labels = []
+values = []
+for l, v in pref_count_sorted:
+    labels.append(l)
+    values.append(v)
+
+# matplotlib.use('Agg')
+plt.rcParams['font.family'] = 'MyricaM M'
+plt.xticks(rotation=60)
+plt.bar(range(len(pref_count_sorted)),
+        values,
+        tick_label=labels)
+plt.savefig('graph.png')
+plt.show()
+
     
 
 
