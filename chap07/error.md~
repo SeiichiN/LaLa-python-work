@@ -1,0 +1,439 @@
+<style>
+.my-text {
+background-color: #f5f5f5;
+padding: 10px;
+margin-left: 30%;
+}
+</style>
+
+<div class="my-text">
+次のコードを実行したところ、下のようなエラーが出ました。
+実行環境 idle shell 3.14.3
+```
+import matplotlib
+import matplotlib.pyplot as plt
+
+labels = []
+temp_v = []
+
+with open('temp.csv', 'r', encoding='UTF-8') as f:
+    for line in f:
+        line = line.rstrip('\n')
+        month, temp = line.split(',')
+        if month.startswith('2025') or month.startswith('月'):
+            continue
+        print(f'{month} 平均気温:{temp}')
+        labels.append(month)
+        temp_v.append(float(temp))
+
+print(labels)
+print(temp_v)
+```
+
+エラー
+```
+Warning (from warnings module):
+  File "<frozen importlib._bootstrap>", line 491
+Warning: Numpy built with MINGW-W64 on Windows 64 bits is experimental, and only available for 
+testing. You are advised not to use it for production. 
+
+CRASHES ARE TO BE EXPECTED - PLEASE REPORT THEM TO NUMPY DEVELOPERS
+```
+
+idle shell 3.13 で実行すると、問題なく動作しました。
+
+この原因、わかりますか？
+ちなみに、同じコードを他の人が実行すると、(idle shell 3.14) 問題なく
+動作したと聞きました。
+</div>
+
+---
+
+この警告は、あなたのコード自体の問題ではなく、`matplotlib` が内部で使っている NumPy のビルド環境に関係している可能性が高いです。
+
+特にこの部分です。
+
+```text
+Warning: Numpy built with MINGW-W64 on Windows 64 bits is experimental
+```
+
+つまり、
+
+* Windows版の NumPy が
+* 「MINGW-W64」というコンパイラ環境でビルドされている
+* しかも experimental（実験的）扱い
+
+という意味です。
+
+---
+
+考えられる原因はかなり絞れます。
+
+## 原因候補1: Python 3.14 用の NumPy がまだ不安定
+
+これが最有力です。
+
+Python 3.14 はかなり新しいため、
+
+* NumPy
+* matplotlib
+* SciPy
+
+などの科学計算系ライブラリが、まだ完全対応していない可能性があります。
+
+特に Windows は、
+
+* MSVC版
+* mingw版
+* UCRT版
+
+などビルドの組み合わせが複雑で、
+3.14向け wheel が安定していないことがあります。
+
+あなたの場合、
+
+```python
+import matplotlib
+```
+
+の時点で内部的に NumPy が読み込まれ、
+その際に警告が出ています。
+
+コード内容とは無関係です。
+
+---
+
+## 原因候補2: インストールされた NumPy が特殊版
+
+普通の pip install なら、通常は MSVC ビルド版が入ります。
+
+しかし、
+
+* embeddable版 Python
+* 非公式ビルド
+* pyenv
+* mingw系 Python
+* MSYS2
+* 特殊な pip mirror
+
+などを使うと、
+mingw版 NumPy が入ることがあります。
+
+---
+
+## 確認してほしいこと
+
+次を実行してください。
+
+```python
+import sys
+print(sys.version)
+
+import numpy
+print(numpy.__version__)
+
+print(numpy.__file__)
+```
+
+特に `numpy.__file__` の場所を見ると、
+
+* 通常版
+* mingw版
+* MSYS2版
+
+などがわかります。
+
+---
+
+## なぜ他の人は動いたのか
+
+これは十分あり得ます。
+
+同じ Python 3.14 でも、
+
+* NumPy の版
+* pip のタイミング
+* インストール元
+* CPU
+* Windows環境
+
+で結果が変わります。
+
+つまり、
+
+* あなた → experimental build
+* 他の人 → 通常 build
+
+だった可能性があります。
+
+---
+
+## 実際にはクラッシュしている？
+
+今回の表示は「Warning」です。
+
+つまり、
+
+* 即エラー停止ではない
+* まだ動く可能性はある
+
+です。
+
+実際、
+
+```python
+print(labels)
+print(temp_v)
+```
+
+まで実行されていれば、
+今のところ実害は出ていません。
+
+---
+
+## 対処法
+
+### 方法1（おすすめ）
+
+Python 3.13 を使う
+
+科学計算系ではまだ 3.13 のほうが安定しています。
+
+あなたが
+
+> idle shell 3.13 では問題なかった
+
+と言っているので、かなり自然です。
+
+---
+
+### 方法2
+
+NumPy を再インストール
+
+コマンドプロンプトで：
+
+```bash
+pip uninstall numpy
+pip install numpy
+```
+
+これで通常版 wheel が入ることがあります。
+
+---
+
+### 方法3
+
+仮想環境を作り直す
+
+```bash
+python -m venv venv
+```
+
+して、新規環境に
+
+```bash
+pip install matplotlib
+```
+
+だけ入れて確認。
+
+---
+
+## ちなみに
+
+あなたのコードには、今のところ `matplotlib.pyplot as plt` を import しているだけで、
+グラフ描画自体はありません。
+
+なので、もし単なる CSV 読み込みだけなら、
+
+```python
+import matplotlib
+import matplotlib.pyplot as plt
+```
+
+をコメントアウトすると、
+警告自体出なくなる可能性があります。
+
+---
+
+<div class="my-text">
+> pip uninstall numpy
+> pip install numpy
+としたら、以下のようなメッセージが出ました。
+
+```
+Installing collected packages: numpy
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+opencv-python 4.12.0.88 requires numpy<2.3.0,>=2; python_version >= "3.9", but you have numpy 2.4.6 which is incompatible.
+Successfully installed numpy-2.4.6
+```
+わかりますか？
+</div>
+
+---
+
+はい、これはかなり状況が見えてきました。
+
+今あなたの環境では、
+
+* OpenCV (`opencv-python`)
+* NumPy
+
+の依存関係が壊れています。
+
+問題はこの部分です。
+
+```text
+opencv-python 4.12.0.88 requires numpy<2.3.0
+but you have numpy 2.4.6
+```
+
+つまり、
+
+* OpenCV は
+  「NumPy 2.3 未満しか対応していない」
+* しかし今入ったのは
+  NumPy 2.4.6
+
+という状態です。
+
+---
+
+しかも、NumPy 2.4.6 自体がかなり新しいです。
+
+Python 3.14 環境では、
+まだ各ライブラリの対応が追いついていないため、
+
+* experimental build
+* 依存関係衝突
+* wheel不足
+
+が起きやすいです。
+
+---
+
+## 今起きていること
+
+おそらく流れはこうです。
+
+1. Python 3.14 を導入
+2. pip install matplotlib
+3. pip が「3.14対応版」を探す
+4. まだ安定版 wheel が少ない
+5. NumPy 2.4.6 experimental build が入る
+6. OpenCV と衝突
+
+かなり「最新すぎる環境」になっています。
+
+---
+
+## おすすめの対処
+
+### 一番安定する方法
+
+Python 3.13 を使う
+
+これはかなり重要です。
+
+現時点（2026年5月）では、
+
+* Python 3.13
+* NumPy 2.2系
+* matplotlib
+* OpenCV
+
+の組み合わせのほうが安定しています。
+
+---
+
+## Python 3.14 を使い続けるなら
+
+NumPy を OpenCV 対応版へ下げます。
+
+たとえば：
+
+```bash
+pip install "numpy<2.3"
+```
+
+または明示的に：
+
+```bash
+pip install numpy==2.2.6
+```
+
+など。
+
+---
+
+## その後確認
+
+```python
+import numpy
+print(numpy.__version__)
+
+import cv2
+print(cv2.__version__)
+
+import matplotlib
+```
+
+で、
+
+* 警告が消えるか
+* import error が出ないか
+
+を確認。
+
+---
+
+## ただし重要
+
+Python 3.14 は、
+まだ scientific stack が完全安定ではない可能性があります。
+
+特に Windows は、
+
+* wheel配布
+* compiler
+* ABI
+
+の問題が出やすいです。
+
+なので、
+
+### 学習用途なら
+
+* Python 3.13
+* venv 仮想環境
+
+がかなりおすすめです。
+
+---
+
+## ちなみに
+
+今回の
+
+```text
+pip's dependency resolver does not currently take into account...
+```
+
+は、
+
+「pip は既存パッケージ全部との整合性を完全にはチェックしていない」
+
+という有名な警告です。
+
+pip は、
+
+* 新しく入れるパッケージ
+
+中心に解決して、
+既存環境全体の矛盾は見逃すことがあります。
+
+なので Python の科学計算系では、
+仮想環境 (`venv`) を分けるのがほぼ必須になっています。
+
+;; 修正時刻: Tue 2026/05/19 16:47:01
