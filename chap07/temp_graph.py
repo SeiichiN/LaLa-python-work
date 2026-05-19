@@ -17,6 +17,6 @@ with open('temp.csv', 'r', encoding='UTF-8') as f:
         labels.append(month)
         temp_v.append(float(temp))
 
-    print(labels)
-    print(temp_v)
+print(labels)
+print(temp_v)
     
