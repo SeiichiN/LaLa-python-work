@@ -20,3 +20,11 @@ with open('temp.csv', 'r', encoding='UTF-8') as f:
 print(labels)
 print(temp_v)
     
+plt.rcParams['font.family'] = 'MyricaM M'
+plt.title('2025年の月平均気温の変化')
+plt.plot(labels, temp_v,
+         label='月平均気温の変化:2025年',
+         color='#e15759')
+plt.legend()
+plt.savefig('graph.png')
+plt.show()
