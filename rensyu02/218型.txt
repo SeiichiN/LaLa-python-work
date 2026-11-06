@@ -1,0 +1,11 @@
+num = 2
+
+1. var = 35 + num  => int型
+
+2. num += '5'   => エラー
+
+3. GLOBAL = '世界' + str(num) + 'カ国' => str型
+
+4. check_code = num * (9 / 3)  => float型
+
+
