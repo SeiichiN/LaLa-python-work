@@ -1,0 +1,13 @@
+1. if initial == 'K':
+
+2. if point >= 80 and point < 256:
+   if 80 <= point < 256:
+   
+3. if year % 4 == 0:
+   割り切れるか？
+     == 割った余りがゼロか？
+
+4. if month in [2, 4, 6, 9, 11]:
+
+5. if moji in 'excelent':
+
